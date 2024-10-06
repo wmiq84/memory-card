@@ -6,6 +6,6 @@ import PokemonImages from './components/PokemonImages.jsx';
 
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
-		<PokemonImages />
+		<App />
 	</StrictMode>
 );

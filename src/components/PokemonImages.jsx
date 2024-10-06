@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/PokemonImages.css'
+import PokemonCard from './PokemonCard';
+import '../styles/PokemonImages.css';
 
-function PokemonImages() {
+function PokemonImages({updateScore}) {
 	const [pokemonData, setPokemonData] = useState([]);
+	const [clickedPokemon, setClickedPokemon] = useState([]);
+	// const [score, updateScore] = useState(0);
 
 	useEffect(() => {
 		const fetchPokemonData = async () => {
@@ -18,18 +21,38 @@ function PokemonImages() {
 		fetchPokemonData();
 	}, []);
 
+	const shuffleArray = (array) => {
+		for (let i = array.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[array[i], array[j]] = [array[j], array[i]];
+		}
+		return array;
+	};
+
+	const handleCardClick = (id) => {
+		if (clickedPokemon.includes(id)) {
+			console.log('Resetting score');
+			updateScore(0);
+			setClickedPokemon([]);
+		} else {
+			const newScore = clickedPokemon.length + 1;
+			console.log('Updating score to:', newScore);
+			updateScore(newScore);
+			setClickedPokemon([...clickedPokemon, id]);
+		}
+		setPokemonData(shuffleArray([...pokemonData]));
+	};
+
 	return (
-		<body>
-			<div id="pokemon">
-				{pokemonData.map((pokemon) => (
-					<img
-						key={pokemon.id}
-						src={pokemon.sprites.front_default}
-						alt={pokemon.name}
-					/>
-				))}
-			</div>
-		</body>
+		<div id="pokemon">
+			{pokemonData.map((pokemon) => (
+				<PokemonCard
+					key={pokemon.id}
+					pokemon={pokemon}
+					onClick={() => handleCardClick(pokemon.id)}
+				/>
+			))}
+		</div>
 	);
 }
 
